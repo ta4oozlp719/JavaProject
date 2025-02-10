@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/core.css"> <!-- 공통 CSS 파일 참조 -->
+    <title>회원가입</title>
+    <style>
+        .desc {
+            float: left;
+            width: 100%;
+            color: #888;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-hdr">회원가입</div>
+    <div class="page-body">
+        <div class="section pad-24 mtop-30">
+            <input id="id" type="text" placeholder="아이디" required>
+            <input id="ps" type="password" class="mtop-10" placeholder="패스워드" required>
+            <input id="ps2" type="password" class="mtop-10" placeholder="패스워드(확인)" required>
+            <input id="name" type="text" class="mtop-10" placeholder="이름" required>
+            <input type="button" value="회원가입하기" class="mtop-20" onclick="signup()">
+        </div>
+		<div class="section pad-24 mtop-30">
+        <div class="desc mtop-20 mbot-20">
+            회원 가입 시 MySNS의 약관에 동의하신 것으로 간주합니다.
+        </div>
+        </div>
+        <a href="#">
+            <div class="button">약관 보기</div>
+        </a>
+    </div>
+    <div class="page-footer">Copyright: mysns.com, 202x</div>
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/core.js"></script>
+    <script>
+        function signup() {
+            // 입력값 받아오기
+            var id = $("#id").val().trim();
+            var ps = $("#ps").val().trim();
+            var ps2 = $("#ps2").val().trim();
+            var name = $("#name").val().trim();
+            
+            // 입력값 체크
+            if (id === "") {
+                alert("아이디를 입력해주세요.");
+                $("#id").focus();
+                return;
+            }
+            if (ps === "") {
+                alert("패스워드를 입력해주세요.");
+                $("#ps").focus();
+                return;
+            }
+            if (ps2 === "") {
+                alert("패스워드 확인을 입력해주세요.");
+                $("#ps2").focus();
+                return;
+            }
+            if (ps !== ps2) {
+                alert("패스워드와 확인이 일치하지 않습니다.");
+                $("#ps2").focus();
+                return;
+            }
+            if (name === "") {
+                alert("이름을 입력해주세요.");
+                $("#name").focus();
+                return;
+            }
+            var userobj={id:id, password:ps, name:name, ts:getToday()};
+            var params={id:id, jsonstr:JSON.stringify(userobj)};
+            /*
+            var params = "id=" + encodeURIComponent(id) + 
+            "&ps=" + encodeURIComponent(ps) + 
+            "&name=" + encodeURIComponent(name);
+			*/
+            // AJAX 요청 보내기
+            var url = "jsp/signup2.jsp";
+
+            AJAX.call(url,params,function(data) {
+                var code = data.trim();
+                if (code === "EX") {
+                    alert("이미 가입한 회원입니다.");
+                } 
+                else if (code === "ER") {
+                    alert("회원가입 처리 중 에러가 발생하였습니다.");
+                   
+                } 
+                else {
+                    alert("회원가입이 완료되었습니다");
+                    window.location.href="main.html";
+                }
+            });
+        }
+        
+        
+ 	function getToday(){
+ 		var date=new Date();
+ 		var year=date.getFullYear();
+ 		var month = ("0"+(1+date.getMonth())).slice(-2);
+ 		var day=("0"+date.getDate()).slice(-2);
+ 		return year+"-"+month+"-"+day;
+ 		
+ 		
+ 	}
+    </script>
+</body>
+</html>

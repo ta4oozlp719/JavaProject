@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/core.css"> <!-- CSS 파일 경로 확인 -->
+    <title>회원 탈퇴</title>
+    <style>
+        .desc {
+            float: left;
+            width: 100%;
+            color: #888;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-hdr">MySNS</div>
+    <div class="page-body">
+        <div class="section pad-24 mtop-30">
+            <!-- input 태그 사용 -->
+            <input id="id" type="text" placeholder="아이디(이메일주소)" required>
+            <div class="mtop-20">
+                <!-- 회원탈퇴 버튼 클릭 시 AJAX 호출 -->
+                <input type="button" class="button mtop-10" value="회원탈퇴하기" onclick="withdraw()">
+            </div>
+
+            <div class="desc mtop-30">    
+                회원 탈퇴 시 회원 정보 및 활동 내역이 모두 제거되며, 복원이 불가능하오니 유의하시기 바랍니다. 
+            </div>
+        </div>
+        <div class="page-footer">Copyright: mysns.com, 202x</div>
+    </div>
+
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/core.js"></script>
+    <script>
+        function withdraw() {
+            var id = $("#id").val().trim();  // 아이디 값 가져오기
+            
+            if (id === "") {
+                alert("아이디를 입력해주세요.");
+                $("#id").focus();
+                return;
+            }
+
+            var url = "jsp/withdraw.jsp?id=" + encodeURIComponent(id);  // 아이디를 쿼리스트링으로 전달
+            AJAX.call(url, null, function(data) {
+                var response = data.trim();
+                if (response === "OK") {
+                    alert("회원탈퇴가 완료되었습니다.");
+                    window.location.href = "index.html";  // 탈퇴 후 리디렉션할 페이지
+                } else if (response === "NA") {
+                    alert("아이디가 존재하지 않습니다.");
+                } else if (response === "ER"){
+                    alert("탈퇴 처리 중 오류가 발생했습니다.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
